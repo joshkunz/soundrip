@@ -12,7 +12,7 @@ where `URL` is the url of the track's soundcloud page.
 
 # Installation
 
-Just make sure the packages in requirements.txt are fufulled.
+Just make sure the packages in requirements.txt are fulfilled.
 `pip install -r requirements.txt` and that the soundrip script is
 somewhere in your path.
 
