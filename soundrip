@@ -1,0 +1,70 @@
+#!/usr/bin/python
+
+# Rips songs from soundcloud
+# Usage:
+#	songrip [page url]
+
+import requests
+import json
+import re
+import urlparse
+import sys
+from lxml import html
+
+re_track = re.compile(r"window.SC.bufferTracks.push\((.*)\);$")
+
+def parse_script(script_tag):
+	"""Check if the script contains track information"""
+	match = re_track.search(script_tag.text.strip())
+	try:
+		return json.loads(match.group(1))
+	except AttributeError:
+		return None
+
+def find_script(url, scripts):
+	"""Find the <script> tag that contains this page's track's info"""
+	parsed_url = urlparse.urlparse(url)
+	for script in scripts:
+		parsed_script = parse_script(script)
+		if (parsed_script is not None
+			and parsed_script['uri'] == parsed_url.path):
+			return parsed_script
+
+def fetch_track_data(url):
+	"""Get a dictionary of track data from a track page url"""
+	page = requests.get(url)
+	page = html.document_fromstring(page.text)
+	track_data = find_script(url, page.xpath('//script'))
+	return track_data
+
+def download_track(url):
+	"""Download a track from soundhound"""
+	track_data = fetch_track_data(url)
+	print "{0:-^70}".format(" Downloading Track ")
+	print "{title}\nby: {user[username]}".format(**track_data)
+
+	# Clean up the filename
+	filename = "{title} - {user[username]}.mp3".format(**track_data)
+	filename = filename.replace('/', '_')
+
+	# Download the file
+	page = requests.get(track_data['streamUrl'])
+
+	file_length = int(page.headers['Content-Length'])
+	written_length = 0.0
+	chunk_size = 1024 # 1 KiB
+	with open(filename, 'wb') as output:
+		for block in page.iter_content(chunk_size=chunk_size):
+			status = round((written_length/file_length)*100, 1)
+			# Status message
+			sys.stdout.write("\rDownloading: {0}%".format(status))
+			sys.stdout.flush()
+			written_length += chunk_size
+			output.write(block)
+	print "\n"
+
+if __name__ == '__main__':
+	if len(sys.argv) < 2:
+		print "usage: soundrip URL [...]"
+	for url in sys.argv[1:]:
+		download_track(url)
