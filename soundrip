@@ -8,6 +8,7 @@ import requests
 import json
 import re
 import urlparse
+import argparse
 import sys
 from lxml import html
 
@@ -64,7 +65,9 @@ def download_track(url):
 	print "\n"
 
 if __name__ == '__main__':
-	if len(sys.argv) < 2:
-		print "usage: soundrip URL [...]"
-	for url in sys.argv[1:]:
+	parser = argparse.ArgumentParser(prog="soundrip")
+	parser.add_argument("url", help="URL of the page of the song\
+						to download", nargs="+")
+	args = parser.parse_args(sys.argv[1:])
+	for url in args.url:
 		download_track(url)
