@@ -2,7 +2,7 @@
 
 # Rips songs from soundcloud
 # Usage:
-#	songrip [page url]
+#	soundrip [page url]
 
 import requests
 import json
@@ -49,7 +49,13 @@ def download_track(url):
 	filename = filename.replace('/', '_')
 
 	# Download the file
-	page = requests.get(track_data['streamUrl'])
+	download_url = "/".join((url, "download"))
+	page = requests.get(download_url, allow_redirects=False)
+	# attempt to use the higher quality file
+	if page.status_code == 302 and page.headers["Location"] == url:
+		page = requests.get(track_data['streamUrl'])
+	else:
+		page = requests.get(download_url)
 
 	file_length = int(page.headers['Content-Length'])
 	written_length = 0.0
@@ -66,8 +72,8 @@ def download_track(url):
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(prog="soundrip")
-	parser.add_argument("url", help="URL of the page of the song\
-						to download", nargs="+")
+	parser.add_argument("url", help="URL of the page of the song you want to\
+						download", nargs="+")
 	args = parser.parse_args(sys.argv[1:])
 	for url in args.url:
 		download_track(url)
