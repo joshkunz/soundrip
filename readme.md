@@ -20,7 +20,7 @@ optional arguments:
 # -g flag
 
 On track pages it downloads the track plus any additonal 'reccomended' tracks.
-On artist pages it will basicall download any tracks you see. But best of all,
+On artist pages it will download any tracks you see. But best of all,
 on 'set' pages it will download the entire set (basically an album)
 
 # Installation
