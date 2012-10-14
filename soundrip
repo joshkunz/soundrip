@@ -12,13 +12,6 @@ import argparse
 import sys
 from lxml import html
 
-MUTAGEN = False
-try:
-    from mutagen.easyid3 import EasyID3
-    MUTAGEN = True
-except ImportError:
-    pass
-
 PREFIX = "http://soundcloud.com"
 
 re_track = re.compile(r"window.SC.bufferTracks.push\((.*)\);$")
