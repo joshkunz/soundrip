@@ -11,9 +11,9 @@ usage: soundrip [-h] [-d] url [url ...]
 positional arguments:
   url         URL of the page of the song you want to download
 
-  optional arguments:
-    -h, --help  show this help message and exit
-    -d, --dir   Make a directory to hold all of the new files in
+optional arguments:
+  -h, --help  show this help message and exit
+  -d, --dir   Make a directory to hold all of the new files in
 ```
 
 # Automatic url handling
