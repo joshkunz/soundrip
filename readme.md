@@ -6,23 +6,25 @@ sometimes they feel like removing the download button.
 
 ```bash
 $ soundrip --help
-usage: soundrip [-h] [-g] url [url ...]
+usage: soundrip [-h] [-d] url [url ...]
 
 positional arguments:
-  url                   URL of the page of the song you want to download
+  url         URL of the page of the song you want to download
 
-optional arguments:
-    -h, --help            show this help message and exit
-    -g, --greedy, --page  Download all detected tracks on a page. This is useful
-                          if you want to download an entire page of tracks.
-                              
+  optional arguments:
+    -h, --help  show this help message and exit
+    -d, --dir   Make a directory to hold all of the new files in
 ```
 
-# -g flag
+# Automatic url handling
 
-On track pages it downloads the track plus any additional 'recommended' tracks.
-On artist pages it will download any tracks you see. But best of all,
-on 'set' pages it will download the entire set (basically an album)
+You can feed soundrip a url to any page and it will try and 'do the right thing'.
+For example you can give it the url to an artist page, and it will download all of
+that artist's tracks. Or you can give it a url to a 'set' and it will download 
+all of the tracks in the set automatically.
+
+You can use this in conjuntion with the `--dir` parameter to have soundrip automatically
+create folder to hold all of the tracks downloaded from an artist page or set.
 
 # Installation
 
