@@ -131,4 +131,3 @@ if __name__ == "__main__":
             download_user(resource, args)
         else:
             print "Unkown resource type: {0}".format(resource["kind"])
-
