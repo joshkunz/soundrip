@@ -7,7 +7,14 @@ import sys
 from datetime import datetime
 
 # Yay open-source
-CLIENT_ID = "cc5e5418305770b11693c271796bf3d8"
+KEY = 0xA3
+
+# XOR encrypted client id key, just some obfuscation to try and 
+# stop bots that eat api keys
+CLIENT_ID = [148, 199, 151, 193, 193, 192, 149, 145, 192, 148, 150, 199, 145, 
+             148, 148, 144, 145, 147, 148, 145, 151, 146, 193, 148, 199, 193, 
+             155, 148, 148, 154, 145, 150]
+CLIENT_ID = "".join(chr(x ^ KEY) for x in CLIENT_ID)
 API_URL = "http://api.soundcloud.com"
 
 labels = [ "b", "kib", "mib", "gib", "tib", "pib", "eib" ]
