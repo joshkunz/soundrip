@@ -64,7 +64,7 @@ def download_track(track):
 
     page = requests.get(url, params={
         "client_id": CLIENT_ID
-    }, prefetch=False)
+    }, stream=True)
 
     file_length = int(page.headers['Content-Length'])
     start = datetime.now()
@@ -130,11 +130,11 @@ if __name__ == "__main__":
 
     for url in args.url:
         resource = fetch_resource_information(url)
-        if resource["kind"] == "track":
+        if resource.get("kind") == "track":
             download_track(resource)
-        elif resource["kind"] == "playlist":
+        elif resource.get("kind") == "playlist":
             download_set(resource, args)
-        elif resource["kind"] == "user":
+        elif resource.get("kind") == "user":
             download_user(resource, args)
         else:
             print "Unkown resource type: {0}".format(resource["kind"])
