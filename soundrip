@@ -4,6 +4,7 @@ import requests
 import json
 import os
 import sys
+import re
 from datetime import datetime
 
 from pprint import pprint
@@ -45,6 +46,19 @@ def filesafe(st):
     "Make a string, sorta filesafe"
     return st.replace('/', '_')
 
+def fallback_stream(track):
+    track_re = re.compile(r"window.SC.bufferTracks.push\((.*)\);")
+    track_page = requests.get(track["permalink_url"])
+    tracks = []
+    for match in track_re.findall(track_page.text):
+        tracks.append(json.loads(match))
+
+    for t in tracks:
+        if t["id"] == track["id"]: 
+            return t["streamUrl"]
+    return None
+    
+
 def download_track(track):
     """Download a track from soundhound
     Requires: streamable, downloadable
@@ -57,12 +71,18 @@ def download_track(track):
     filename = u"{title} - {user[username]}.mp3".format(**track)
     filename = filesafe(filename)
 
-    if not track["streamable"] and not track["downloadable"]:
-        print "No url found to download track."
-
-    url = track["stream_url"]
-    if track["downloadable"]:
+    url = None
+    if "download_url" in track:
         url = track["download_url"]
+    elif "stream_url" in track:
+        url = track["stream_url"]
+    else:
+        print "No official stream, trying fallback..."
+        url = fallback_stream(track)
+
+    if url is None:
+        print "Unable to find a download url for track:", track["title"]
+        sys.exit(1)
 
     page = requests.get(url, params={
         "client_id": CLIENT_ID
